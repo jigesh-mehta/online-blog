@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<a href="/blog/newpost">Write new post!</a>
+	<br>
+	<h3>{{blog.subject}}</h3>
+	<pre>{{blog.content}}</pre>
+	<div>queried {{queried_time}} seconds ago</div>
+{% endblock %}

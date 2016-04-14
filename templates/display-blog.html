@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<a href="/blog/newpost">Write new post!</a>
+	<br>
+	{% for blog in blogs %}
+		<hr>
+		<a href="/blog/{{blog.key().id()}}" ><h3>{{blog.subject}}</h3></a>
+		<pre>{{blog.content}}</pre>
+	{% endfor %}
+	<div class="queried">
+		{{queried_time}}
+	</div>
+{% endblock %}
