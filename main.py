@@ -38,10 +38,7 @@ class BaseHandler(webapp2.RequestHandler):
 			blogs = db.GqlQuery("select * from Blog order by created desc limit 10")
 			front_page = self.render_str('display-blog.html', blogs = blogs)
 			memcache.set(key, front_page)
-			#global accessed_time
-			#accessed_time = time.time()
 			memcache.set('accessed-time', time.time())
-			#logging.error("Its here!!!%s" % accessed_time)
 		return front_page, curr_time
 
 class MainHandler(BaseHandler):
@@ -52,8 +49,6 @@ class MainHandler(BaseHandler):
 class BlogHandler(BaseHandler):
 	def get(self):
 		front_page, curr_time = self.top_blogs()
-		#global accessed_time
-		#logging.error(accessed_time)
 		diff_time = int(curr_time - memcache.get('accessed-time'))
 		front_page += '<div>queried %s seconds ago</div>' % diff_time
 		self.write(front_page)
@@ -137,7 +132,6 @@ def valid_pw(name, pw, h):
 
 SECRET = 'imsosecret'
 def hash_str(s):
-    #return hashlib.md5(s).hexdigest()
     return hmac.new(SECRET, s).hexdigest()
 
 def make_secure_val(s):
@@ -153,8 +147,6 @@ class SignupHandler(BaseHandler):
 	def display_form(self, uname_err="", password_err="", verify_err="", email_err="", uname="", email=""):
 		self.render('signup.html', uname_error = uname_err, password_error = password_err,
 		 verify_error = verify_err, email_error = email_err, uname = uname, email = email)
-		# self.response.write(signup % {'uname_error': uname_err, 'password_error': password_err,
-		#  'verify_error': verify_err, 'email_error': email_err, 'uname':uname, 'email': email})
 
 	def get(self):
 		self.display_form()
@@ -202,13 +194,6 @@ class SignupHandler(BaseHandler):
 class WelcomeHandler(BaseHandler):
 	def get(self):
 		user_id_cookie = self.request.cookies.get('user-id')
-		# if user_id_cookie:
-		# 	user_hash = user_id_cookie.split('|')
-		# 	user_db = User.get_by_id(user_hash[0])
-		# 	if user_db and check_secure_val(user_hash[1]):
-		# 		self.write("Welcome, %s" % user_db.user_id)
-		# 	else:
-		# 		self.redirect("/blog/signup")
 		if user_id_cookie:
 			user_id = check_secure_val(user_id_cookie)
 			if user_id:
@@ -221,12 +206,7 @@ class WelcomeHandler(BaseHandler):
 				self.redirect("/blog/signup")
 		else:
 			self.redirect("/blog/signup")
-
-		# stranger = "stranger"
-		# if user_id_cookie and check_secure_val(user_id_cookie):
-		# 	self.write("Welcome, %s" % stranger)
-		# else:
-		# 	self.redirect("/blog/signup")
+			
 
 class JsonBlogHandler(BaseHandler):
 	def get(self):
